@@ -8,15 +8,15 @@ bin/
 ./bin/*
 *.pid
 *.test
-build-tool/crypto-linux-amd64
-build-tool/crypto-linux-arm64
+build-tool/msm-linux-amd64
+build-tool/msm-linux-arm64
 
 # config
 .idea/
 */.idea/
 .DS_Store
 test/
-config/crypto.yaml
+config/msm.yaml
 
 # output
 *.out

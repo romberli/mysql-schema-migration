@@ -25,10 +25,8 @@ const (
 	DefaultCommandName = "crypto"
 	DefaultBaseDir     = constant.CurrentDir
 
-	DefaultKeyTypePrivate = "private"
-	DefaultKeyTypePublic  = "public"
-
-	DefaultConvertDBMySQLName = "gp"
+	DefaultSourceType = "file"
+	DefaultTargetType = "file"
 )
 
 // configuration constant
@@ -36,23 +34,21 @@ const (
 	// log
 	LogLevelKey  = "log.level"
 	LogFormatKey = "log.format"
-	// rsa
-	RSAPrivateKey = "rsa.private"
-	RSAPublicKey  = "rsa.public"
-	// sm2
-	SM2PrivateKey = "sm2.private"
-	SM2PublicKey  = "sm2.public"
-	// input
-	InputKey = "input"
-	// convert
-	ConvertYAMLEnabledKey    = "convert.yaml.enabled"
-	ConvertYAMLPathKey       = "convert.yaml.path"
-	ConvertYAMLNestedPathKey = "convert.yaml.nestedPath"
-	ConvertInsightEnabledKey = "convert.insightEnabled"
-	ConvertTenantEnabledKey  = "convert.tenantEnabled"
-	ConvertPAMEnabledKey     = "convert.pamEnabled"
-	ConvertDBMySQLAddrKey    = "convert.db.mysql.addr"
-	ConvertDBMySQLNameKey    = "convert.db.mysql.name"
-	ConvertDBMySQLUserKey    = "convert.db.mysql.user"
-	ConvertDBMySQLPassKey    = "convert.db.mysql.pass"
+	// table
+	TableIncludeKey = "table.include"
+	TableExcludeKey = "table.exclude"
+	// source
+	SourceTypeKey = "source.type"
+	SourceFileKey = "source.file"
+	SourceDBAddrKey
+	SourceDBNameKey = "source.db.name"
+	SourceDBUserKey = "source.db.user"
+	SourceDBPassKey = "source.db.pass"
+	// target
+	TargetTypeKey   = "target.type"
+	TargetFileKey   = "target.file"
+	TargetDBAddrKey = "target.db.addr"
+	TargetDBNameKey = "target.db.name"
+	TargetDBUserKey = "target.db.user"
+	TargetDBPassKey = "target.db.pass"
 )

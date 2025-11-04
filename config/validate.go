@@ -23,23 +23,18 @@ func ValidateConfiguration() (err error) {
 	if err != nil {
 		merr = multierror.Append(merr, err)
 	}
-	// validate rsa section
-	err = ValidateRSA()
+	// validate table
+	err = ValidateTable()
 	if err != nil {
 		merr = multierror.Append(merr, err)
 	}
-	// validate sm2 section
-	err = ValidateSM2()
+	// validate source
+	err = ValidateSource()
 	if err != nil {
 		merr = multierror.Append(merr, err)
 	}
-	// validate input section
-	err = ValidateInput()
-	if err != nil {
-		merr = multierror.Append(merr, err)
-	}
-	// validate convert section
-	err = ValidateConvert()
+	// validate target
+	err = ValidateTarget()
 	if err != nil {
 		merr = multierror.Append(merr, err)
 	}
@@ -71,17 +66,17 @@ func ValidateLog() error {
 	return merr.ErrorOrNil()
 }
 
-// ValidateRSA validates if rsa section is valid.
-func ValidateRSA() error {
+// ValidateTable validates if table section is valid.
+func ValidateTable() error {
 	merr := &multierror.Error{}
 
-	// validate rsa.private
-	_, err := cast.ToStringE(viper.Get(RSAPrivateKey))
+	// validate table.include
+	_, err := cast.ToStringSliceE(viper.Get(TableIncludeKey))
 	if err != nil {
 		merr = multierror.Append(merr, errors.Trace(err))
 	}
-	// validate rsa.public
-	_, err = cast.ToStringE(viper.Get(RSAPublicKey))
+	// validate table.exclude
+	_, err = cast.ToStringSliceE(viper.Get(TableExcludeKey))
 	if err != nil {
 		merr = multierror.Append(merr, errors.Trace(err))
 	}
@@ -89,102 +84,167 @@ func ValidateRSA() error {
 	return merr.ErrorOrNil()
 }
 
-// ValidateSM2 validates if sm2 section is valid.
-func ValidateSM2() error {
+// ValidateSource validates if source section is valid.
+func ValidateSource() error {
 	merr := &multierror.Error{}
-
-	// validate sm2.private
-	_, err := cast.ToStringE(viper.Get(SM2PrivateKey))
+	// validate source.type
+	sourceType, err := cast.ToStringE(viper.Get(SourceTypeKey))
 	if err != nil {
 		merr = multierror.Append(merr, errors.Trace(err))
+	} else {
+		if !common.ElementInSlice(ValidTypes, sourceType) {
+			merr = multierror.Append(merr, message.NewMessage(message.ErrNotValidType, sourceType))
+		}
 	}
-	// validate sm2.public
-	_, err = cast.ToStringE(viper.Get(SM2PublicKey))
+	// validate source.file
+	path, err := cast.ToStringE(viper.Get(SourceFileKey))
 	if err != nil {
 		merr = multierror.Append(merr, errors.Trace(err))
-	}
-
-	return merr.ErrorOrNil()
-}
-
-// ValidateInout validates if input section is valid.
-func ValidateInput() error {
-	merr := &multierror.Error{}
-	// validate input
-	_, err := cast.ToStringE(viper.Get(InputKey))
-	if err != nil {
-		merr = multierror.Append(merr, errors.Trace(err))
-	}
-
-	return merr.ErrorOrNil()
-}
-
-// ValidateConvert validates if convert section is valid.
-func ValidateConvert() error {
-	merr := &multierror.Error{}
-
-	// validate convert.yaml.enabled
-	_, err := cast.ToBoolE(viper.Get(ConvertYAMLEnabledKey))
-	if err != nil {
-		merr = multierror.Append(merr, errors.Trace(err))
-	}
-	// validate convert.yaml.path
-	path, err := cast.ToStringE(viper.Get(ConvertYAMLPathKey))
-	if err != nil {
-		merr = multierror.Append(merr, errors.Trace(err))
-	}
-	if path != constant.EmptyString {
-		isAbs := filepath.IsAbs(path)
-		if !isAbs {
-			path, err = filepath.Abs(path)
-			if err != nil {
-				merr = multierror.Append(merr, errors.Trace(err))
+	} else {
+		if sourceType == TypeFile {
+			if path == constant.EmptyString {
+				merr = multierror.Append(merr, message.NewMessage(message.ErrEmptyPath))
+			} else {
+				isAbs := filepath.IsAbs(path)
+				if !isAbs {
+					path, err = filepath.Abs(path)
+					if err != nil {
+						merr = multierror.Append(merr, errors.Trace(err))
+					}
+				}
+				valid, _ := govalidator.IsFilePath(path)
+				if !valid {
+					merr = multierror.Append(merr, message.NewMessage(message.ErrNotValidPath, path))
+				}
 			}
 		}
-		valid, _ := govalidator.IsFilePath(path)
-		if !valid {
-			merr = multierror.Append(merr, message.NewMessage(message.ErrNotValidPath, path))
+	}
+	// validate source.db.addr
+	sourceDBAddr, err := cast.ToStringE(viper.Get(SourceDBAddrKey))
+	if err != nil {
+		merr = multierror.Append(merr, errors.Trace(err))
+	} else {
+		if sourceType == TypeDB {
+			if sourceDBAddr == constant.EmptyString {
+				merr = multierror.Append(merr, message.NewMessage(message.ErrEmptyDBAddr))
+			}
 		}
 	}
-	// validate convert.yaml.nested
-	_, err = cast.ToStringE(viper.Get(ConvertYAMLNestedPathKey))
+	// validate source.db.name
+	sourceDBName, err := cast.ToStringE(viper.Get(SourceDBNameKey))
 	if err != nil {
 		merr = multierror.Append(merr, errors.Trace(err))
+	} else {
+		if sourceType == TypeDB {
+			if sourceDBName == constant.EmptyString {
+				merr = multierror.Append(merr, message.NewMessage(message.ErrEmptyDBName))
+			}
+		}
 	}
-	// validate convert.insight.enabled
-	_, err = cast.ToBoolE(viper.Get(ConvertInsightEnabledKey))
+	// validate source.db.user
+	sourceDBUser, err := cast.ToStringE(viper.Get(SourceDBUserKey))
 	if err != nil {
 		merr = multierror.Append(merr, errors.Trace(err))
+	} else {
+		if sourceType == TypeDB {
+			if sourceDBUser == constant.EmptyString {
+				merr = multierror.Append(merr, message.NewMessage(message.ErrEmptyDBUser))
+			}
+		}
 	}
-	// validate convert.instance.enabled
-	_, err = cast.ToBoolE(viper.Get(ConvertTenantEnabledKey))
+	// validate source.db.pass
+	sourceDBPass, err := cast.ToStringE(viper.Get(SourceDBPassKey))
 	if err != nil {
 		merr = multierror.Append(merr, errors.Trace(err))
+	} else {
+		if sourceType == TypeDB {
+			if sourceDBPass == constant.EmptyString {
+				merr = multierror.Append(merr, message.NewMessage(message.ErrEmptyDBPass))
+			}
+		}
 	}
-	// validate convert.pam.enabled
-	_, err = cast.ToBoolE(viper.Get(ConvertPAMEnabledKey))
+
+	return merr.ErrorOrNil()
+}
+
+// ValidateTarget validates if target section is valid.
+func ValidateTarget() error {
+	merr := &multierror.Error{}
+	// validate target.type
+	targetType, err := cast.ToStringE(viper.Get(TargetTypeKey))
 	if err != nil {
 		merr = multierror.Append(merr, errors.Trace(err))
+	} else {
+		if !common.ElementInSlice(ValidTypes, targetType) {
+			merr = multierror.Append(merr, message.NewMessage(message.ErrNotValidType, targetType))
+		}
 	}
-	// validate convert.db.mysql.addr
-	_, err = cast.ToStringE(viper.Get(ConvertDBMySQLAddrKey))
+	// validate target.file
+	path, err := cast.ToStringE(viper.Get(TargetFileKey))
 	if err != nil {
 		merr = multierror.Append(merr, errors.Trace(err))
+	} else {
+		if targetType == TypeFile {
+			if path == constant.EmptyString {
+				merr = multierror.Append(merr, message.NewMessage(message.ErrEmptyPath))
+			} else {
+				isAbs := filepath.IsAbs(path)
+				if !isAbs {
+					path, err = filepath.Abs(path)
+					if err != nil {
+						merr = multierror.Append(merr, errors.Trace(err))
+					}
+				}
+				valid, _ := govalidator.IsFilePath(path)
+				if !valid {
+					merr = multierror.Append(merr, message.NewMessage(message.ErrNotValidPath, path))
+				}
+			}
+		}
 	}
-	// validate convert.db.mysql.name
-	_, err = cast.ToStringE(viper.Get(ConvertDBMySQLNameKey))
+	// validate target.db.addr
+	targetDBAddr, err := cast.ToStringE(viper.Get(TargetDBAddrKey))
 	if err != nil {
 		merr = multierror.Append(merr, errors.Trace(err))
+	} else {
+		if targetType == TypeDB {
+			if targetDBAddr == constant.EmptyString {
+				merr = multierror.Append(merr, message.NewMessage(message.ErrEmptyDBAddr))
+			}
+		}
 	}
-	// validate convert.db.mysql.user
-	_, err = cast.ToStringE(viper.Get(ConvertDBMySQLUserKey))
+	// validate target.db.name
+	targetDBName, err := cast.ToStringE(viper.Get(TargetDBNameKey))
 	if err != nil {
 		merr = multierror.Append(merr, errors.Trace(err))
+	} else {
+		if targetType == TypeDB {
+			if targetDBName == constant.EmptyString {
+				merr = multierror.Append(merr, message.NewMessage(message.ErrEmptyDBName))
+			}
+		}
 	}
-	// validate convert.db.mysql.pass
-	_, err = cast.ToStringE(viper.Get(ConvertDBMySQLPassKey))
+	// validate target.db.user
+	targetDBUser, err := cast.ToStringE(viper.Get(TargetDBUserKey))
 	if err != nil {
 		merr = multierror.Append(merr, errors.Trace(err))
+	} else {
+		if targetType == TypeDB {
+			if targetDBUser == constant.EmptyString {
+				merr = multierror.Append(merr, message.NewMessage(message.ErrEmptyDBUser))
+			}
+		}
+	}
+	// validate target.db.pass
+	targetDBPass, err := cast.ToStringE(viper.Get(TargetDBPassKey))
+	if err != nil {
+		merr = multierror.Append(merr, errors.Trace(err))
+	} else {
+		if targetType == TypeDB {
+			if targetDBPass == constant.EmptyString {
+				merr = multierror.Append(merr, message.NewMessage(message.ErrEmptyDBPass))
+			}
+		}
 	}
 
 	return merr.ErrorOrNil()

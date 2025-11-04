@@ -43,25 +43,23 @@ var (
 	// log
 	logLevel  string
 	logFormat string
-	// rsa
-	rsaPrivate string
-	rsaPublic  string
-	// sm2
-	sm2Private string
-	sm2Public  string
-	// input
-	input string
-	// convert
-	convertYAMLEnabledStr    string
-	convertYAMLPath          string
-	convertYAMLNestedPath    string
-	convertInsightEnabledStr string
-	convertTenantEnabledStr  string
-	convertPAMEnabledStr     string
-	convertDBMySQLAddr       string
-	convertDBMySQLName       string
-	convertDBMySQLUser       string
-	convertDBMySQLPass       string
+	// table
+	tableInclude string
+	tableExclude string
+	// source
+	sourceType   string
+	sourceFile   string
+	sourceDBAddr string
+	sourceDBName string
+	sourceDBUser string
+	sourceDBPass string
+	// target
+	targetType   string
+	targetFile   string
+	targetDBAddr string
+	targetDBName string
+	targetDBUser string
+	targetDBPass string
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -71,7 +69,7 @@ var rootCmd = &cobra.Command{
 	Long:  `go-crypto is a encryption and decryption tool written in go.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// if no subcommand is set, it will print help information.
-		if len(args) == 0 {
+		if len(args) == constant.ZeroInt {
 			err := cmd.Help()
 			if err != nil {
 				fmt.Println(fmt.Sprintf(constant.LogWithStackString, message.NewMessage(message.ErrPrintHelpInfo, errors.Trace(err))))
@@ -111,26 +109,23 @@ func init() {
 	// log
 	rootCmd.PersistentFlags().StringVar(&logLevel, "log-level", constant.DefaultRandomString, fmt.Sprintf("specify the log level(default: %s)", log.DefaultLogLevel))
 	rootCmd.PersistentFlags().StringVar(&logFormat, "log-format", constant.DefaultRandomString, fmt.Sprintf("specify the log format(default: %s)", log.DefaultLogFormat))
-	// rsa
-	rootCmd.PersistentFlags().StringVar(&rsaPrivate, "rsa-private", constant.DefaultRandomString, fmt.Sprintf("specify rsa private key"))
-	rootCmd.PersistentFlags().StringVar(&rsaPublic, "rsa-public", constant.DefaultRandomString, fmt.Sprintf("specify rsa public key"))
-	rootCmd.PersistentFlags().StringVar(&sm2Private, "sm2-private", constant.DefaultRandomString, fmt.Sprintf("specify sm2 private key"))
-	// sm2
-	rootCmd.PersistentFlags().StringVar(&sm2Public, "sm2-public", constant.DefaultRandomString, fmt.Sprintf("specify sm2 public key"))
-	// input
-	rootCmd.PersistentFlags().StringVar(&input, "input", constant.DefaultRandomString, "specify the input string")
-	// convert
-	rootCmd.PersistentFlags().StringVar(&convertYAMLEnabledStr, "convert-yaml-enabled", constant.DefaultRandomString, "specify whether to convert yaml")
-	rootCmd.PersistentFlags().StringVar(&convertYAMLPath, "convert-yaml-path", constant.DefaultRandomString, "specify the path of yaml file")
-	rootCmd.PersistentFlags().StringVar(&convertYAMLNestedPath, "convert-yaml-nested-path", constant.DefaultRandomString, "specify the nested path")
-	rootCmd.PersistentFlags().StringVar(&convertInsightEnabledStr, "convert-insight-enabled", constant.DefaultRandomString, "specify whether to convert insight")
-	rootCmd.PersistentFlags().StringVar(&convertTenantEnabledStr, "convert-tenant-enabled", constant.DefaultRandomString, "specify whether to convert tenant")
-	rootCmd.PersistentFlags().StringVar(&convertPAMEnabledStr, "convert-pam-enabled", constant.DefaultRandomString, "specify whether to convert pam")
-	rootCmd.PersistentFlags().StringVar(&convertDBMySQLAddr, "convert-db-mysql-addr", constant.DefaultRandomString, "specify the mysql address")
-	rootCmd.PersistentFlags().StringVar(&convertDBMySQLName, "convert-db-mysql-name", constant.DefaultRandomString, "specify the mysql name")
-	rootCmd.PersistentFlags().StringVar(&convertDBMySQLUser, "convert-db-mysql-user", constant.DefaultRandomString, "specify the mysql user")
-	rootCmd.PersistentFlags().StringVar(&convertDBMySQLPass, "convert-db-mysql-pass", constant.DefaultRandomString, "specify the mysql password")
-
+	// table
+	rootCmd.PersistentFlags().StringVar(&tableInclude, "table-include", constant.DefaultRandomString, "specify the tables to be included")
+	rootCmd.PersistentFlags().StringVar(&tableExclude, "table-exclude", constant.DefaultRandomString, "specify the tables to be excluded")
+	// source
+	rootCmd.PersistentFlags().StringVar(&sourceType, "source-type", constant.DefaultRandomString, fmt.Sprintf("specify the source type(default: %s)", config.DefaultSourceType))
+	rootCmd.PersistentFlags().StringVar(&sourceFile, "source-file", constant.DefaultRandomString, "specify the source file path")
+	rootCmd.PersistentFlags().StringVar(&sourceDBAddr, "source-db-addr", constant.DefaultRandomString, fmt.Sprintf("specify the source db address(default: %s)", constant.DefaultMySQLAddr))
+	rootCmd.PersistentFlags().StringVar(&sourceDBName, "source-db-name", constant.DefaultRandomString, fmt.Sprintf("specify the source db name(default: %s)", constant.EmptyString))
+	rootCmd.PersistentFlags().StringVar(&sourceDBUser, "source-db-user", constant.DefaultRandomString, fmt.Sprintf("specify the source db user(default: %s)", constant.DefaultRootUserName))
+	rootCmd.PersistentFlags().StringVar(&sourceDBPass, "source-db-pass", constant.DefaultRandomString, fmt.Sprintf("specify the source db password(default: %s)", constant.DefaultRootUserPass))
+	// target
+	rootCmd.PersistentFlags().StringVar(&targetType, "target-type", constant.DefaultRandomString, fmt.Sprintf("specify the target type(default: %s)", config.DefaultTargetType))
+	rootCmd.PersistentFlags().StringVar(&targetFile, "target-file", constant.DefaultRandomString, "specify the target file path")
+	rootCmd.PersistentFlags().StringVar(&targetDBAddr, "target-db-addr", constant.DefaultRandomString, fmt.Sprintf("specify the target db address(default: %s)", constant.DefaultMySQLAddr))
+	rootCmd.PersistentFlags().StringVar(&targetDBName, "target-db-name", constant.DefaultRandomString, fmt.Sprintf("specify the target db name(default: %s)", constant.EmptyString))
+	rootCmd.PersistentFlags().StringVar(&targetDBUser, "target-db-user", constant.DefaultRandomString, fmt.Sprintf("specify the target db user(default: %s)", constant.DefaultRootUserName))
+	rootCmd.PersistentFlags().StringVar(&targetDBPass, "target-db-pass", constant.DefaultRandomString, fmt.Sprintf("specify the target db password(default: %s)", constant.DefaultRootUserPass))
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")

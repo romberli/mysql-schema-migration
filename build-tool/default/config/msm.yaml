@@ -1,0 +1,29 @@
+config: msm.yaml
+daemon: false
+
+log:
+  level: info
+  format: text
+
+table:
+  include: ""
+  exclude: ""
+
+source:
+  type: file
+  file: "./source.sql"
+  db:
+    addr: 127.0.0.1:3306
+    name: gp
+    user: root
+    pass: root
+
+target:
+  type: file
+  file: "./target.sql"
+  db:
+    addr: 127.0.0.1:3306
+    name: gp
+    user: root
+    pass: root
+

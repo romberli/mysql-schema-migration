@@ -5,7 +5,6 @@ import (
 
 	"github.com/romberli/go-util/constant"
 	"github.com/romberli/go-util/viper"
-	"github.com/spf13/cast"
 
 	"github.com/romberli/mysql-schema-migration/config"
 	"github.com/romberli/mysql-schema-migration/pkg/message"
@@ -19,17 +18,12 @@ func OverrideConfigByCLI() error {
 		return err
 	}
 
-	// override rsa
-	overrideRSAByCLI()
-	// override sm2
-	overrideSM2ByCLI()
-	// override input
-	overrideInputByCLI()
-	// override convert
-	err = overrideConvertByCLI()
-	if err != nil {
-		return err
-	}
+	// override table
+	overrideTableByCLI()
+	// override source
+	overrideSourceByCLI()
+	// override target
+	overrideTargetByCLI()
 
 	// validate configuration
 	err = config.ValidateConfiguration()
@@ -56,81 +50,56 @@ func overrideLogByCLI() error {
 	return nil
 }
 
-// overrideRSAByCLI overrides the rsa section by command line interface
-func overrideRSAByCLI() {
-	if rsaPrivate != constant.DefaultRandomString {
-		viper.Set(config.RSAPrivateKey, rsaPrivate)
+// overrideTableByCLI overrides the table section by command line interface
+func overrideTableByCLI() {
+	if tableInclude != constant.DefaultRandomString {
+		viper.Set(config.TableIncludeKey, tableInclude)
 	}
-	if rsaPublic != constant.DefaultRandomString {
-		viper.Set(config.RSAPublicKey, rsaPublic)
-	}
-}
-
-// overrideSM2ByCLI overrides the sm2 section by command line interface
-func overrideSM2ByCLI() {
-	if sm2Private != constant.DefaultRandomString {
-		viper.Set(config.SM2PrivateKey, sm2Private)
-	}
-	if sm2Public != constant.DefaultRandomString {
-		viper.Set(config.SM2PublicKey, sm2Public)
+	if tableExclude != constant.DefaultRandomString {
+		viper.Set(config.TableExcludeKey, tableExclude)
 	}
 }
 
-// overrideInputByCLI overrides the input section by command line interface
-func overrideInputByCLI() {
-	if input != constant.DefaultRandomString {
-		viper.Set(config.InputKey, input)
+// overrideSourceByCLI overrides the source section by command line interface
+func overrideSourceByCLI() {
+	if sourceType != constant.DefaultRandomString {
+		viper.Set(config.SourceTypeKey, sourceType)
+	}
+	if sourceFile != constant.DefaultRandomString {
+		viper.Set(config.SourceFileKey, sourceFile)
+	}
+	if sourceDBAddr != constant.DefaultRandomString {
+		viper.Set(config.SourceDBAddrKey, sourceDBAddr)
+	}
+	if sourceDBName != constant.DefaultRandomString {
+		viper.Set(config.SourceDBNameKey, sourceDBName)
+	}
+	if sourceDBUser != constant.DefaultRandomString {
+		viper.Set(config.SourceDBUserKey, sourceDBUser)
+	}
+	if sourceDBPass != constant.DefaultRandomString {
+		viper.Set(config.SourceDBPassKey, sourceDBPass)
 	}
 }
 
-// overrideConvertByCLI overrides the convert section by command line interface
-func overrideConvertByCLI() error {
-	if convertYAMLEnabledStr != constant.DefaultRandomString {
-		convertYAMLEnabled, err := cast.ToBoolE(convertYAMLEnabledStr)
-		if err != nil {
-			return err
-		}
-		viper.Set(config.ConvertYAMLEnabledKey, convertYAMLEnabled)
+// overrideTargetByCLI overrides the target section by command line interface
+func overrideTargetByCLI() {
+	if targetType != constant.DefaultRandomString {
+		viper.Set(config.TargetTypeKey, targetType)
 	}
-	if convertYAMLPath != constant.DefaultRandomString {
-		viper.Set(config.ConvertYAMLPathKey, convertYAMLPath)
+	if targetFile != constant.DefaultRandomString {
+		viper.Set(config.TargetFileKey, targetFile)
 	}
-	if convertYAMLNestedPath != constant.DefaultRandomString {
-		viper.Set(config.ConvertYAMLNestedPathKey, convertYAMLNestedPath)
+	if targetDBAddr != constant.DefaultRandomString {
+		viper.Set(config.TargetDBAddrKey, targetDBAddr)
 	}
-	if convertInsightEnabledStr != constant.DefaultRandomString {
-		convertInsightEnabled, err := cast.ToBoolE(convertInsightEnabledStr)
-		if err != nil {
-			return err
-		}
-		viper.Set(config.ConvertInsightEnabledKey, convertInsightEnabled)
+	if targetDBName != constant.DefaultRandomString {
+		viper.Set(config.TargetDBNameKey, targetDBName)
 	}
-	if convertTenantEnabledStr != constant.DefaultRandomString {
-		convertTenantEnabled, err := cast.ToBoolE(convertTenantEnabledStr)
-		if err != nil {
-			return err
-		}
-		viper.Set(config.ConvertTenantEnabledKey, convertTenantEnabled)
+	if targetDBUser != constant.DefaultRandomString {
+		viper.Set(config.TargetDBUserKey, targetDBUser)
 	}
-	if convertPAMEnabledStr != constant.DefaultRandomString {
-		convertPAMEnabled, err := cast.ToBoolE(convertPAMEnabledStr)
-		if err != nil {
-			return err
-		}
-		viper.Set(config.ConvertPAMEnabledKey, convertPAMEnabled)
+	if targetDBPass != constant.DefaultRandomString {
+		viper.Set(config.TargetDBPassKey, targetDBPass)
 	}
-	if convertDBMySQLAddr != constant.DefaultRandomString {
-		viper.Set(config.ConvertDBMySQLAddrKey, convertDBMySQLAddr)
-	}
-	if convertDBMySQLName != constant.DefaultRandomString {
-		viper.Set(config.ConvertDBMySQLNameKey, convertDBMySQLName)
-	}
-	if convertDBMySQLUser != constant.DefaultRandomString {
-		viper.Set(config.ConvertDBMySQLUserKey, convertDBMySQLUser)
-	}
-	if convertDBMySQLPass != constant.DefaultRandomString {
-		viper.Set(config.ConvertDBMySQLPassKey, convertDBMySQLPass)
-	}
-
-	return nil
 }

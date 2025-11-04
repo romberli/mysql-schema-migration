@@ -25,10 +25,15 @@ import (
 	"github.com/romberli/log"
 )
 
+const (
+	TypeFile = "file"
+	TypeDB   = "db"
+)
+
 var (
 	ValidLogLevels  = []string{"debug", "info", "warn", "warning", "error", "fatal"}
 	ValidLogFormats = []string{"text", "json"}
-	ValidKeyTypes   = []string{"public", "private"}
+	ValidTypes      = []string{TypeFile, TypeDB}
 )
 
 // SetDefaultConfig set default configuration, it is the lowest priority
@@ -36,25 +41,23 @@ func SetDefaultConfig(baseDir string) {
 	// log
 	viper.SetDefault(LogLevelKey, log.DefaultLogLevel)
 	viper.SetDefault(LogFormatKey, log.DefaultLogFormat)
-	// rsa
-	viper.SetDefault(RSAPrivateKey, constant.EmptyString)
-	viper.SetDefault(RSAPublicKey, constant.EmptyString)
-	// sm2
-	viper.SetDefault(SM2PrivateKey, constant.EmptyString)
-	viper.SetDefault(SM2PublicKey, constant.EmptyString)
-	// input
-	viper.SetDefault(InputKey, constant.EmptyString)
-	// convert
-	viper.SetDefault(ConvertYAMLEnabledKey, constant.FalseString)
-	viper.SetDefault(ConvertYAMLPathKey, constant.EmptyString)
-	viper.SetDefault(ConvertYAMLNestedPathKey, constant.EmptyString)
-	viper.SetDefault(ConvertInsightEnabledKey, constant.FalseString)
-	viper.SetDefault(ConvertTenantEnabledKey, constant.FalseString)
-	viper.SetDefault(ConvertPAMEnabledKey, constant.FalseString)
-	viper.SetDefault(ConvertDBMySQLAddrKey, constant.DefaultMySQLAddr)
-	viper.SetDefault(ConvertDBMySQLNameKey, DefaultConvertDBMySQLName)
-	viper.SetDefault(ConvertDBMySQLUserKey, constant.DefaultRootUserName)
-	viper.SetDefault(ConvertDBMySQLPassKey, constant.DefaultRootUserPass)
+	// table
+	viper.SetDefault(TableIncludeKey, constant.EmptyString)
+	viper.SetDefault(TableExcludeKey, constant.EmptyString)
+	// source
+	viper.SetDefault(SourceTypeKey, DefaultSourceType)
+	viper.SetDefault(SourceFileKey, constant.CurrentDir)
+	viper.SetDefault(SourceDBAddrKey, constant.DefaultMySQLAddr)
+	viper.SetDefault(SourceDBNameKey, constant.EmptyString)
+	viper.SetDefault(SourceDBUserKey, constant.DefaultRootUserName)
+	viper.SetDefault(SourceDBPassKey, constant.DefaultRootUserPass)
+	// target
+	viper.SetDefault(TargetTypeKey, DefaultTargetType)
+	viper.SetDefault(TargetFileKey, constant.CurrentDir)
+	viper.SetDefault(TargetDBAddrKey, constant.DefaultMySQLAddr)
+	viper.SetDefault(TargetDBNameKey, constant.EmptyString)
+	viper.SetDefault(TargetDBUserKey, constant.DefaultRootUserName)
+	viper.SetDefault(TargetDBPassKey, constant.DefaultRootUserPass)
 }
 
 // TrimSpaceOfArg trims spaces of given argument

@@ -21,85 +21,97 @@ log:
   # default: text
   format: text
 
-# key configuration
-rsa:
-  # description: rsa private key
-  # command-line-argument: --rsa-public
-  # type: string
-  private: ""
-  # description: rsa public key
-  # command-line-argument: --rsa-public
-  # type: string
-  public: ""
+# table configuration
+table:
+  # description: only tables included in this list will be processed
+  # command-line-argument: --table-include
+  # type: list
+  # default: None
+  include: ""
+  # description: tables excluded in this list will be ignored, this is higher priority than include
+  # command-line-argument: --table-exclude
+  # type: list
+  # default: None
+  exclude: ""
 
-# key configuration
-sm2:
-  # description: sm2 private key
-  # command-line-argument: --sm2-private
+# source configuration
+source:
+  # description: source type
+  # command-line-argument: --source-type
   # type: string
-  private: ""
-  # description: sm2 public key
-  # command-line-argument: --sm2-public
+  # available: [file, db]
+  # default: file
+  type: file
+  # description: source file path, if it's specified as relative path,
+  # then directory of binary file will be the base directory of source file,
+  # it is recommended to specify absolute path.
+  # command-line-argument: --source-file
   # type: string
-  public: ""
-
-# description: input string
-# command-line-argument: --input
-# type: string
-# default: None
-input: ""
-
-# convert section
-convert:
-  yaml:
-    # description: convert gp yaml
-    # command-line-argument: --convert-yaml-enabled
-    # type: bool
-    # default: false
-    enabled: false
-    # description: specify gp yaml path
-    # command-line-argument: --convert-yaml-path
-    # type: string
-    # default: ""
-    path: ""
-  # description: insight enabled
-  # command-line-argument: --convert-insight-enabled
-  # type: bool
-  # default: false
-  insightEnabled: false
-  # description: tenant enabled
-  # command-line-argument: --convert-tenant-enabled
-  # type: bool
-  # default: false
-  tenantEnabled: false
-  # description: pam enabled
-  # command-line-argument: --convert-pam-enabled
-  # type: bool
-  # default: false
-  pamEnabled: false
-  # db section
+  # default: None
+  file: ""
+  # source db configuration
   db:
-    # mysql section
-    mysql:
-      # description: mysql addr
-      # command-line-argument: --convert-db-mysql-addr
-      # type: string
-      # default: 127.0.0.1:3306
-      addr: 127.0.0.1:3306
-      # description: mysql database name
-      # command-line-argument: --convert-db-mysql-name
-      # type: string
-      # default: ""
-      name: ""
-      # description: mysql user
-      # command-line-argument: --convert-db-mysql-user
-      # type: string
-      # default: root
-      user: root
-      # description: mysql password
-      # command-line-argument: --convert-db-mysql-password
-      # type: string
-      # default: root
-      password: root
+    # description: source database address
+    # command-line-argument: --source-db-addr
+    # type: string
+    # default: 127.0.0.1:3306
+    addr: 127.0.0.1:3306
+    # description: source database name
+    # command-line-argument: --source-db-name
+    # type: string
+    # default: None
+    name: gp
+    # description: source database user
+    # command-line-argument: --source-db-user
+    # type: string
+    # default: None
+    user: root
+    # description: source database password
+    # command-line-argument: --source-db-pass
+    # type: string
+    # default: None
+    pass: root
+
+target:
+  # description: target type
+  # command-line-argument: --target-type
+  # type: string
+  # available: [file, db]
+  # default: file
+  type: file
+  # description: target file path, if it's specified as relative path,
+  # then directory of binary file will be the base directory of target file,
+  # it is recommended to specify absolute path.
+  # command-line-argument: --target-file
+  # type: string
+  # default: None
+  file: ""
+  # target db configuration
+  db:
+    # description: target database address
+    # command-line-argument: --target-db-addr
+    # type: string
+    # default: 127.0.0.1:3306
+    addr: 192.168.137.11:3306
+    # description: target database name
+    # command-line-argument: --target-db-name
+    # type: string
+    # default: None
+    name: gp
+    # description: target database user
+    # command-line-argument: --target-db-user
+    # type: string
+    # default: None
+    user: root
+    # description: target database password
+    # command-line-argument: --target-db-pass
+    # type: string
+    # default: None
+    pass: root
+    # description: target database tables
+    # command-line-argument: --target-db-tables
+    # type: list
+    # default: None
+    table: ""
 
 

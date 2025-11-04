@@ -20,7 +20,7 @@ import (
 	"github.com/romberli/go-util/constant"
 )
 
-const DefaultMessageHeader = "RSA"
+const DefaultMessageHeader = "MSM"
 
 var Messages = map[int]*config.ErrMessage{}
 
