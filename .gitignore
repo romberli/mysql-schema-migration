@@ -10,6 +10,8 @@ bin/
 *.test
 build-tool/msm-linux-amd64
 build-tool/msm-linux-arm64
+build-tool/msm-darwin-amd64
+build-tool/msm-darwin-arm64
 
 # config
 .idea/
