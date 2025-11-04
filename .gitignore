@@ -1,0 +1,32 @@
+# binary
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+./bin/*
+*.pid
+*.test
+build-tool/crypto-linux-amd64
+build-tool/crypto-linux-arm64
+
+# config
+.idea/
+*/.idea/
+.DS_Store
+test/
+config/crypto.yaml
+
+# output
+*.out
+log/
+*/*.log
+*.log
+
+#other
+archive/*
+release/*
+http-client.env.json
+.vscode/
+.test

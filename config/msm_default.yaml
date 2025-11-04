@@ -1,0 +1,105 @@
+# description: configuration file path, if it's specified as relative path,
+# then directory of binary file will be the base directory of configuration file,
+# it is recommended to specify absolute path.
+# command-line-argument: --config
+# type: string
+# default: None
+config: crypto.yaml
+
+# log configuration
+log:
+  # description: log level
+  # command-line-argument: --log-level
+  # type: string
+  # available: [debug, info, warn, error, fatal]
+  # default: info
+  level: info
+  # description: log format
+  # command-line-argument: --log-format
+  # type: string
+  # available: [text, json]
+  # default: text
+  format: text
+
+# key configuration
+rsa:
+  # description: rsa private key
+  # command-line-argument: --rsa-public
+  # type: string
+  private: ""
+  # description: rsa public key
+  # command-line-argument: --rsa-public
+  # type: string
+  public: ""
+
+# key configuration
+sm2:
+  # description: sm2 private key
+  # command-line-argument: --sm2-private
+  # type: string
+  private: ""
+  # description: sm2 public key
+  # command-line-argument: --sm2-public
+  # type: string
+  public: ""
+
+# description: input string
+# command-line-argument: --input
+# type: string
+# default: None
+input: ""
+
+# convert section
+convert:
+  yaml:
+    # description: convert gp yaml
+    # command-line-argument: --convert-yaml-enabled
+    # type: bool
+    # default: false
+    enabled: false
+    # description: specify gp yaml path
+    # command-line-argument: --convert-yaml-path
+    # type: string
+    # default: ""
+    path: ""
+  # description: insight enabled
+  # command-line-argument: --convert-insight-enabled
+  # type: bool
+  # default: false
+  insightEnabled: false
+  # description: tenant enabled
+  # command-line-argument: --convert-tenant-enabled
+  # type: bool
+  # default: false
+  tenantEnabled: false
+  # description: pam enabled
+  # command-line-argument: --convert-pam-enabled
+  # type: bool
+  # default: false
+  pamEnabled: false
+  # db section
+  db:
+    # mysql section
+    mysql:
+      # description: mysql addr
+      # command-line-argument: --convert-db-mysql-addr
+      # type: string
+      # default: 127.0.0.1:3306
+      addr: 127.0.0.1:3306
+      # description: mysql database name
+      # command-line-argument: --convert-db-mysql-name
+      # type: string
+      # default: ""
+      name: ""
+      # description: mysql user
+      # command-line-argument: --convert-db-mysql-user
+      # type: string
+      # default: root
+      user: root
+      # description: mysql password
+      # command-line-argument: --convert-db-mysql-password
+      # type: string
+      # default: root
+      password: root
+
+
