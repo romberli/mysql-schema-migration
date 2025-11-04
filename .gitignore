@@ -12,6 +12,10 @@ build-tool/msm-linux-amd64
 build-tool/msm-linux-arm64
 build-tool/msm-darwin-amd64
 build-tool/msm-darwin-arm64
+build-tool/msm-linux-amd64.zip
+build-tool/msm-linux-arm64.zip
+build-tool/msm-darwin-amd64.zip
+build-tool/msm-darwin-arm64.zip
 
 # config
 .idea/
