@@ -38,9 +38,9 @@ const (
 	TableIncludeKey = "table.include"
 	TableExcludeKey = "table.exclude"
 	// source
-	SourceTypeKey = "source.type"
-	SourceFileKey = "source.file"
-	SourceDBAddrKey
+	SourceTypeKey   = "source.type"
+	SourceFileKey   = "source.file"
+	SourceDBAddrKey = "source.db.addr"
 	SourceDBNameKey = "source.db.name"
 	SourceDBUserKey = "source.db.user"
 	SourceDBPassKey = "source.db.pass"

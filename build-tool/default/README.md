@@ -18,4 +18,5 @@
 
 # 显示表结构迁移脚本
 - 在linux shell里运行./show-migration.sh
-- 输出内容为sql语句列表, 其中DROP TABLE相关语句被注释, 请谨慎执行
+- 输出内容为sql语句列表, 其中DROP TABLE相关语句被注释
+- 对于DROP TABLE或DROP COLUMN等高危语句, 请确认无问题后谨慎执行

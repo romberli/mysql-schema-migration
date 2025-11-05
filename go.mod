@@ -9,7 +9,7 @@ require (
 	github.com/hokaccha/go-prettyjson v0.0.0-20211117102719-0474bc63780f
 	github.com/pingcap/errors v0.11.5-0.20250523034308-74f78ae071ee
 	github.com/romberli/go-multierror v1.1.3
-	github.com/romberli/go-util v0.3.21-0.20251104121822-b0a9ca6fb311
+	github.com/romberli/go-util v0.3.21-0.20251105055156-13a5688b91ac
 	github.com/romberli/log v1.0.30
 	github.com/spf13/cast v1.10.0
 	github.com/spf13/cobra v1.10.1

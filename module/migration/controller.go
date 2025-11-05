@@ -4,7 +4,6 @@ import (
 	"os"
 
 	"github.com/pingcap/errors"
-	"github.com/romberli/go-util/common"
 	"github.com/romberli/go-util/constant"
 	"github.com/romberli/go-util/linux"
 	"github.com/romberli/go-util/middleware/mysql"
@@ -36,7 +35,10 @@ func (c *Controller) GetSchemaMigrationSQLList() ([]string, error) {
 
 	var sqlList []string
 	for _, diff := range diffList {
-		sqlList = append(sqlList, diff.GetTableMigrationSQL())
+		sql := diff.GetTableMigrationSQL()
+		if sql != constant.EmptyString {
+			sqlList = append(sqlList, sql)
+		}
 	}
 
 	return sqlList, nil
@@ -66,13 +68,13 @@ Loop:
 		}
 
 		tableDiff := parser.NewTableDiff(parser.TableDiffTypeDrop, sourceTableDefinition.Table, nil)
-		diffList = append(diffList, parser.NewTableDefinitionDiff(sourceTableDefinition, nil, tableDiff, nil, nil))
+		diffList = append(diffList, parser.NewTableDefinitionDiff(sourceTableDefinition.Table.GetFullTableName(), constant.EmptyString, tableDiff, nil, nil))
 	}
 
 	for _, targetTableDefinition := range targetTableDefinitions {
 		if !c.tableDefinitionExists(sourceTableDefinitions, targetTableDefinition) {
 			tableDiff := parser.NewTableDiff(parser.TableDiffTypeCreate, nil, targetTableDefinition.Table)
-			diffList = append(diffList, parser.NewTableDefinitionDiff(nil, targetTableDefinition, tableDiff, nil, nil))
+			diffList = append(diffList, parser.NewTableDefinitionDiff(constant.EmptyString, targetTableDefinition.Table.GetFullTableName(), tableDiff, nil, nil))
 		}
 	}
 
@@ -99,6 +101,9 @@ func (c *Controller) GetSourceTableDefinitions() ([]*parser.TableFullDefinition,
 			viper.GetString(config.SourceDBUserKey),
 			viper.GetString(config.SourceDBPassKey),
 		)
+		if err != nil {
+			return nil, err
+		}
 	default:
 		return nil, errors.Errorf("unknown source type. type: %s", t)
 	}
@@ -206,14 +211,9 @@ func (c *Controller) ParseTableDefinitions(sqls []string) ([]*parser.TableFullDe
 }
 
 func (c *Controller) FilterTables(tableDefinitions []*parser.TableFullDefinition) []*parser.TableFullDefinition {
-	includeTables := viper.GetStringSlice(config.TableIncludeKey)
-	excludeTables := viper.GetStringSlice(config.TableExcludeKey)
-
 	var filteredTables []*parser.TableFullDefinition
 	for _, tableDefinition := range tableDefinitions {
-		if (len(includeTables) == constant.ZeroInt ||
-			common.ElementInSlice(includeTables, tableDefinition.Table.TableName)) &&
-			!common.ElementInSlice(excludeTables, tableDefinition.Table.TableName) {
+		if IsTableIncluded(tableDefinition.Table.TableName) {
 			filteredTables = append(filteredTables, tableDefinition)
 		}
 	}

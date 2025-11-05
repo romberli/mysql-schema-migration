@@ -36,13 +36,15 @@ func (r *Repository) GetTableNames() ([]string, error) {
 		return nil, err
 	}
 
-	tableNames := make([]string, result.RowNumber())
+	var tableNames []string
 	for i := constant.ZeroInt; i < result.RowNumber(); i++ {
 		tableName, err := result.GetString(i, constant.ZeroInt)
 		if err != nil {
 			return nil, err
 		}
-		tableNames[i] = tableName
+		if IsTableIncluded(tableName) {
+			tableNames = append(tableNames, tableName)
+		}
 	}
 
 	return tableNames, nil
@@ -56,7 +58,7 @@ func (r *Repository) GetCreateTableSQL(tableName string) (string, error) {
 		return constant.EmptyString, err
 	}
 
-	createSQL, err := result.GetString(constant.ZeroInt, constant.ZeroInt)
+	createSQL, err := result.GetString(constant.ZeroInt, constant.OneInt)
 	if err != nil {
 		return constant.EmptyString, err
 	}
