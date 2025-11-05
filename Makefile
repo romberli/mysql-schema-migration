@@ -133,4 +133,7 @@ clean:
 	rm -rf ./build-tool/msm-linux-amd64/
 	rm -rf ./build-tool/msm-linux-arm64/
 	rm -rf ./build-tool/msm-darwin-arm64/
+	rm -rf ./build-tool/msm-linux-amd64.zip
+	rm -rf ./build-tool/msm-linux-arm64.zip
+	rm -rf ./build-tool/msm-darwin-arm64.zip
 	@echo "cleaning files created during building completed."
