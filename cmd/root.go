@@ -66,7 +66,7 @@ var (
 var rootCmd = &cobra.Command{
 	Use:   "msm",
 	Short: "msm",
-	Long:  `mysql-schema-migration is a tool to show difference between two mysql schemas and migration sqls`,
+	Long:  `mysql-schema-migration is a tool to show differences between two mysql schemas and migration sqls`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// if no subcommand is set, it will print help information.
 		if len(args) == constant.ZeroInt {
