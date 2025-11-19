@@ -53,7 +53,7 @@ LD_FLAGS := -ldflags " \
 default: all
 
 .PHONY: all
-all: build-linux-amd64 build-linux-arm64
+all: build-darwin-arm64 build-linux-amd64 build-linux-arm64
 
 .PHONY: prepare
 GO_VERSION_MIN=1.24
