@@ -62,7 +62,9 @@ Loop:
 		for _, targetTableDefinition = range targetTableDefinitions {
 			if sourceTableDefinition.Table.TableName == targetTableDefinition.Table.TableName {
 				tableDiff := targetTableDefinition.Diff(sourceTableDefinition)
-				diffList = append(diffList, tableDiff)
+				if tableDiff != nil {
+					diffList = append(diffList, tableDiff)
+				}
 				continue Loop
 			}
 		}

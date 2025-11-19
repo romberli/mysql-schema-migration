@@ -64,9 +64,9 @@ var (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "go-crypto",
-	Short: "go-crypto",
-	Long:  `go-crypto is a encryption and decryption tool written in go.`,
+	Use:   "msm",
+	Short: "msm",
+	Long:  `mysql-schema-migration is a tool to show difference between two mysql schemas and migration sqls`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// if no subcommand is set, it will print help information.
 		if len(args) == constant.ZeroInt {
